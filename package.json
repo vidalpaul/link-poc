@@ -1,0 +1,12 @@
+{
+  "name": "link-poc",
+  "version": "0.1",
+  "description": "Chainlink Crypto API integration PoC",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@chainlink/abi": "^0.1.4",
+    "web3": "^1.7.1",
+    "web3-eth-contract": "^1.7.1"
+  }
+}
