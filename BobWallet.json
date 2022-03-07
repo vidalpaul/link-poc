@@ -1,0 +1,8 @@
+{
+   "network": "Ethereum",
+   "mnemonicsKey": "546159aDjnd9dwnwwd32nr30crm45b9vhwvc",
+   "address": "0xA005Ec4c62e064a59F89FE0f270CD8C5dDda42e0",
+   "encryptedWallet": "[{\"version\":3,\"id\":\"5aca5209-8bbd-4f3b-bca5-ccc4883ef41c\",\"address\":\"a005ec4c62e064a59f89fe0f270cd8c5ddda42e0\",\"crypto\":{\"ciphertext\":\"1244c721f2c0e5bfc3647b0db4f98f76a316a629d11a1747dda586b7e8aecf42\",\"cipherparams\":{\"iv\":\"3508b6e282d432116ab39abdcb8d267f\"},\"cipher\":\"aes-128-ctr\",\"kdf\":\"scrypt\",\"kdfparams\":{\"dklen\":32,\"salt\":\"9713b37688617e2153f175e90f7776d64f6e1211c57dd579b9e369ff3028c9b4\",\"n\":8192,\"r\":8,\"p\":1},\"mac\":\"e3758a7b0e9561cbb6192d467792c62dd16031f0d96ac6b84bf5ea05b4aafd83\"}}]",
+   "mnemonics": "boldo cenoura dinheiro inerente macaco rival timo secretariado acetona linfa jenipapo dono",
+   "encryptedMnemonics": "U2FsdGVkX1/Ct5rvWNz1gkmPIYyozYsLXSCuLxNSGNjN+ESjWRwavibE4+OD/WaO6GA+gZTVFxjk5Q6R2RXoFbbLOoR9eINZou+IJZrSYlnGWSVC0Ox+lSNBjkNsKTQMvE6nUJ0CwkwEse2mYSyy5A=="
+}
