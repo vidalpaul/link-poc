@@ -1,8 +1,28 @@
+const express = require('express');
 const Web3 = require('web3');
 const Contract = require('web3-eth-contract');
 const TokenABI = require('@chainlink/abi/v0.4/LinkToken.json');
+const Alice = require('./Alice.json');
+const Bob = require('./Bob.json');
 
-console.log('Starting...');
+const contractAddr = '0x01BE23585060835E02B77ef475b0Cc51aA1e0709';
+
+console.log('🟡 Starting Express server...');
+
+const port = 3000;
+
+const App = express();
+
+App.get('/', (req, res) => {
+   return res.send('🟢 Server online. Expecting POST requests on /v0');
+});
+
+App.use(express.json());
+App.use(require('./routes'));
+
+App.listen(port, () => {
+   // console.log('🟢 $LINK PoC API listening on port', port);
+});
 
 const provider = new Web3.providers.HttpProvider(
    'https://rinkeby.infura.io/v3/43598f8c3fcf439b8afee03a0044ac0e'
@@ -10,52 +30,16 @@ const provider = new Web3.providers.HttpProvider(
 
 const web3 = new Web3(provider);
 
-console.log('Connected to Rinkeby network via', web3.currentProvider.host);
+console.log('🟢 Connected to Rinkeby network via', web3.currentProvider.host);
 
-// async addAccountToWallet(account) {
-//    this.core.web3.eth.accounts.wallet.add(account);
-//  }
+web3.eth.defaultAccount = Alice.address;
 
-//  async fromPk(privateKey) {
-//    const acc = this.core.web3.eth.accounts.privateKeyToAccount(privateKey);
-//    await this.addAccountToWallet(acc);
+console.log("🟢 Connected to Alice's account:", Alice.address);
 
-//    return acc;
-//  }
+console.log('🟡 Instatiating contracts...');
 
-//  async encryptWallet(password) {
-//    if (!password) {
-//      throw new Error('PASSWORD_MISSING');
-//    }
+const tokenContract = new Contract(TokenABI.abi, contractAddr);
 
-//    const encryptedWallet = await this.core.web3.eth.accounts.wallet.encrypt(
-//      password,
-//    );
-
-//    return encryptedWallet;
-//  }
-
-//  async decryptWallet(encryptedObject, password) {
-//    this.cc.log('accounts', '--DECRYPT WALLET--');
-
-//    this.core.web3.eth.accounts.wallet.clear(); //limpa a carteira atual para que ela seja substituída
-
-//    try {
-//      const wallet = await this.core.web3.eth.accounts.wallet.decrypt(
-//        encryptedObject,
-//        password,
-//      );
-
-//      this.cc.log('accounts', 'Wallet Restored.');
-
-//      //Connects the first account:
-//      let firstAcc = await this.fromWallet();
-//      await this.core.connect(firstAcc);
-
-//      return wallet;
-//    } catch (e) {
-//      throw new Error('CANNOT_DECRYPT_WALLET: ' + e.message);
-//    }
-//  }
-
-console.log('Connected to', web3.eth.defaultAccount);
+console.log(
+   `🟢 Connected to token contract '${TokenABI.contractName}' at ${contractAddr}`
+);
