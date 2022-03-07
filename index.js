@@ -7,14 +7,14 @@ const Bob = require('./Bob.json');
 const contractAddr = '0x01BE23585060835E02B77ef475b0Cc51aA1e0709';
 
 async function startServer() {
-   console.log('🟡 Starting Express server...');
+   console.log('\n🟡 Starting Express server...');
 
    const port = 3000;
 
    const App = express();
 
    App.get('/', (req, res) => {
-      return res.send('\n🟢 Server online. Expecting POST requests on /v0');
+      return res.send('🟢 Server online. Expecting POST requests on /v0');
    });
 
    App.use(express.json());
@@ -58,8 +58,6 @@ async function startServer() {
 
    console.log('\n🟡 Alice is trying to buy some $LINK...');
 
-   buy(Alice, amount);
-
    console.log(`\n🟢 Alice bought ${amount} $LINK`);
 
    console.log('\n🟡 Alice is trying to transfer some $LINK to Bob...');
@@ -89,9 +87,13 @@ async function startServer() {
          .balanceOf(Bob.address)
          .call({ from: Bob.address })}`
    );
-}
 
-async function buy(encryptedObj, amount) {}
+   console.log(
+      `My account's balance: ${await tokenContract.methods
+         .balanceOf('0xa4c4bfF1E0E8D9Ceb71D8394F38e7fDbeEe109c4')
+         .call({ from: '0xa4c4bfF1E0E8D9Ceb71D8394F38e7fDbeEe109c4' })}`
+   );
+}
 
 async function transfer(encryptedObj, to, amount) {}
 
