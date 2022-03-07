@@ -14,14 +14,14 @@ async function startServer() {
    const App = express();
 
    App.get('/', (req, res) => {
-      return res.send('🟢 Server online. Expecting POST requests on /v0');
+      return res.send('\n🟢 Server online. Expecting POST requests on /v0');
    });
 
    App.use(express.json());
    App.use(require('./routes'));
 
    App.listen(port, () => {
-      console.log('🟢 $LINK PoC API listening on port', port);
+      console.log('\n🟢 $LINK PoC API listening on port', port);
    });
 
    const provider = await new Web3.providers.HttpProvider(
@@ -32,15 +32,18 @@ async function startServer() {
 
    const currentBlock = await web3.eth.getBlock('latest');
 
-   console.log('🟢 Connected to Rinkeby via', await web3.currentProvider.host);
+   console.log(
+      '\n🟢 Connected to Rinkeby via',
+      await web3.currentProvider.host
+   );
 
-   console.log('🟢 Current block: ', currentBlock.number);
+   console.log('\n🟢 Current block: ', currentBlock.number);
 
    web3.eth.defaultAccount = Alice.address;
 
-   console.log("🟢 Connected to Alice's account:", Alice.address);
+   console.log("\n🟢 Connected to Alice's account:", Alice.address);
 
-   console.log('🟡 Instatiating contracts...');
+   console.log('\n🟡 Instatiating contracts...');
 
    const tokenContract = await new web3.eth.Contract(
       TokenABI.abi,
@@ -48,23 +51,41 @@ async function startServer() {
    );
 
    console.log(
-      `🟢 Connected to token contract '${TokenABI.contractName}' at ${contractAddr}`
+      `\n🟢 Connected to token contract '${TokenABI.contractName}' at ${contractAddr}`
    );
 
    let amount = 0;
 
-   console.log('Alice is trying to buy some $LINK...');
+   console.log('\n🟡 Alice is trying to buy some $LINK...');
 
    buy(Alice, amount);
 
-   console.log(`Alice bought ${amount} $LINK`);
+   console.log(`\n🟢 Alice bought ${amount} $LINK`);
 
-   console.log('Alice is trying to transfer some $LINK to Bob...');
+   console.log('\n🟡 Alice is trying to transfer some $LINK to Bob...');
 
    transfer(Alice, Bob.address, amount);
 
    console.log(
-      `Bob's $LINK balance: ${await tokenContract.methods
+      `\n🟢 Alice's $LINK balance before transfer: ${await tokenContract.methods
+         .balanceOf(Alice.address)
+         .call({ from: Alice.address })}`
+   );
+
+   console.log(
+      `\n🟢 Bob's $LINK balance before transfer: ${await tokenContract.methods
+         .balanceOf(Bob.address)
+         .call({ from: Bob.address })}`
+   );
+
+   console.log(
+      `\n🟢 Alice's $LINK balance after transfer: ${await tokenContract.methods
+         .balanceOf(Alice.address)
+         .call({ from: Alice.address })}`
+   );
+
+   console.log(
+      `\n🟢 Bob's $LINK balance after transfer: ${await tokenContract.methods
          .balanceOf(Bob.address)
          .call({ from: Bob.address })}`
    );
