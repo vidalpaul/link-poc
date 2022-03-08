@@ -3,6 +3,7 @@ const Web3 = require('web3');
 const TokenABI = require('@chainlink/abi/v0.4/LinkToken.json');
 const Alice = require('./Alice.json');
 const Bob = require('./Bob.json');
+const transfer = require('./transfer');
 
 const contractAddr = '0x01BE23585060835E02B77ef475b0Cc51aA1e0709';
 
@@ -37,9 +38,9 @@ async function startServer() {
       await web3.currentProvider.host
    );
 
-   console.log('\n🟢 Current block: ', currentBlock.number);
+   web3.eth.defaultAccount = '0xa4c4bff1e0e8d9ceb71d8394f38e7fdbeee109c4';
 
-   web3.eth.defaultAccount = Alice.address;
+   console.log('\n🟢 Current block: ', currentBlock.number);
 
    console.log("\n🟢 Connected to Alice's account:", Alice.address);
 
@@ -54,11 +55,36 @@ async function startServer() {
       `\n🟢 Connected to token contract '${TokenABI.contractName}' at ${contractAddr}`
    );
 
-   let amount = 0;
+   const amount = 10000;
+
+   console.log(
+      `\n🟢 Exchange account's balance: ${await tokenContract.methods
+         .balanceOf('0xa4c4bfF1E0E8D9Ceb71D8394F38e7fDbeEe109c4')
+         .call({ from: '0xa4c4bfF1E0E8D9Ceb71D8394F38e7fDbeEe109c4' })}`
+   );
 
    // console.log('\n🟡 Alice is trying to buy some $LINK...');
 
-   // console.log(`\n🟢 Alice bought ${amount} $LINK`);
+   const tx = await tokenContract.methods
+      .transfer(Alice.address, amount)
+      .send(
+         { from: '0xa4c4bff1e0e8d9ceb71d8394f38e7fdbeee109c4' },
+         function (err, res) {
+            if (err) {
+               console.log('An error occured', err);
+               return;
+            }
+            console.log('Hash of the transaction: ' + res);
+         }
+      );
+
+   console.log(
+      `\n🟢 Alice bought ${amount} $LINK from the exchange's account: ${tx.transactionHash}`
+   );
+
+   console.log(`\n🟢 Alice bought ${amount} $LINK`);
+
+   web3.eth.defaultAccount = Alice.address;
 
    console.log('\n🟡 Alice is trying to transfer some $LINK to Bob...');
 
@@ -86,12 +112,6 @@ async function startServer() {
       `\n🟢 Bob's $LINK balance after transfer: ${await tokenContract.methods
          .balanceOf(Bob.address)
          .call({ from: Bob.address })}`
-   );
-
-   console.log(
-      `My account's balance: ${await tokenContract.methods
-         .balanceOf('0xa4c4bfF1E0E8D9Ceb71D8394F38e7fDbeEe109c4')
-         .call({ from: '0xa4c4bfF1E0E8D9Ceb71D8394F38e7fDbeEe109c4' })}`
    );
 }
 
