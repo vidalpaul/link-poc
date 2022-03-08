@@ -56,9 +56,9 @@ async function startServer() {
 
    let amount = 0;
 
-   console.log('\n🟡 Alice is trying to buy some $LINK...');
+   // console.log('\n🟡 Alice is trying to buy some $LINK...');
 
-   console.log(`\n🟢 Alice bought ${amount} $LINK`);
+   // console.log(`\n🟢 Alice bought ${amount} $LINK`);
 
    console.log('\n🟡 Alice is trying to transfer some $LINK to Bob...');
 
