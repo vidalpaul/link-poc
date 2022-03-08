@@ -1,9 +1,9 @@
 const express = require('express');
 const Web3 = require('web3');
 const TokenABI = require('@chainlink/abi/v0.4/LinkToken.json');
-const Alice = require('./Alice.json');
-const Bob = require('./Bob.json');
-const transfer = require('./transfer');
+const Alice = require('./wallets/Alice.json');
+const Bob = require('./wallets/Bob.json');
+const Exchange = require('./wallets/Exchange.json');
 
 const contractAddr = '0x01BE23585060835E02B77ef475b0Cc51aA1e0709';
 
@@ -63,32 +63,28 @@ async function startServer() {
          .call({ from: '0xa4c4bfF1E0E8D9Ceb71D8394F38e7fDbeEe109c4' })}`
    );
 
-   // console.log('\n🟡 Alice is trying to buy some $LINK...');
+   console.log('\n🟡 Alice is trying to buy some $LINK...');
 
-   const tx = await tokenContract.methods
-      .transfer(Alice.address, amount)
-      .send(
-         { from: '0xa4c4bff1e0e8d9ceb71d8394f38e7fdbeee109c4' },
-         function (err, res) {
-            if (err) {
-               console.log('An error occured', err);
-               return;
-            }
-            console.log('Hash of the transaction: ' + res);
-         }
-      );
+   // const tx = await tokenContract.methods
+   //    .transfer(Alice.address, amount)
+   //    .send(
+   //       { from: '0xa4c4bff1e0e8d9ceb71d8394f38e7fdbeee109c4' },
+   //       function (err, res) {
+   //          if (err) {
+   //             console.log('An error occured', err);
+   //             return;
+   //          }
+   //          console.log('Hash of the transaction: ' + res);
+   //       }
+   //    );
 
-   console.log(
-      `\n🟢 Alice bought ${amount} $LINK from the exchange's account: ${tx.transactionHash}`
-   );
-
-   console.log(`\n🟢 Alice bought ${amount} $LINK`);
+   // console.log(
+   //    `\n🟢 Alice bought ${amount} $LINK from the exchange's account: ${tx.transactionHash}`
+   // );
 
    web3.eth.defaultAccount = Alice.address;
 
    console.log('\n🟡 Alice is trying to transfer some $LINK to Bob...');
-
-   transfer(Alice, Bob.address, amount);
 
    console.log(
       `\n🟢 Alice's $LINK balance before transfer: ${await tokenContract.methods
@@ -101,6 +97,9 @@ async function startServer() {
          .balanceOf(Bob.address)
          .call({ from: Bob.address })}`
    );
+
+   // TRANSFER
+   // transferLink(Alice, Bob.address, amount);
 
    console.log(
       `\n🟢 Alice's $LINK balance after transfer: ${await tokenContract.methods
@@ -115,7 +114,15 @@ async function startServer() {
    );
 }
 
-async function transfer(symbol, from, pk, to, amount, gasPrice = null) {
+async function transfer(
+   symbol,
+   from,
+   pk = Alice.privateKey,
+   to,
+   amount,
+   gasPrice = null,
+   web3
+) {
    const token = 'LINK';
    console.log(
       `TokenTX.send(symbol: ${symbol}, to: ${to}, amount: ${amount}, gasPrice: ${gasPrice}, isMint: ${isMint})`
@@ -126,11 +133,13 @@ async function transfer(symbol, from, pk, to, amount, gasPrice = null) {
 
    console.log(`-> from: ${from}`);
 
-   const functionSig = token.methods.transfer(to, amount).encodeABI();
+   const functionSig = await tokenContract.methods
+      .transfer(to, amount)
+      .encodeABI();
 
    console.log(`-> functionSig: ${functionSig}`);
 
-   const estimatedGas = await token.methods
+   const estimatedGas = await tokenContract.methods
       .transfer(to, amount)
       .estimateGas({ from, data: functionSig })
       .catch((e) => {
@@ -158,9 +167,7 @@ async function transfer(symbol, from, pk, to, amount, gasPrice = null) {
 
    console.log(`-> tx: ${JSON.stringify(config, null, 2)}`);
 
-   const pk = 0;
-
-   const signedTx = await this.core.web3.eth.accounts
+   const signedTx = await web3.eth.accounts
       .signTransaction(config, pk)
       .catch(async (e) => {
          const atLeast = e.message.split('least ')[1];
@@ -171,7 +178,6 @@ async function transfer(symbol, from, pk, to, amount, gasPrice = null) {
          return await web3.eth.accounts
             .signTransaction(config, pk)
             .catch((e) => {
-               BitfyNonceManager.unmute();
                throw e;
             });
       });
