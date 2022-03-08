@@ -95,7 +95,7 @@ async function buyLink() {
    console.log(
       `Attempting to send signed tx:  ${serializedTx.toString('hex')}`
    );
-   var receipt = await web3.eth.sendSignedTransaction(
+   let receipt = await web3.eth.sendSignedTransaction(
       '0x' + serializedTx.toString('hex')
    );
    console.log(`Receipt info:  ${JSON.stringify(receipt, null, '\t')}`);
