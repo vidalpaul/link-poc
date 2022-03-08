@@ -1,6 +1,7 @@
 {
    "network": "Ethereum",
    "mnemonicsKey": "546159aDjnd9dwnwwd32nr30crm45b9vhwvc",
+   "privateKey": "0x6c84ed5cd4e0ec49046d9a988a95db45a66693d6face4b6603e331c77c787479",
    "address": "0xa31184Fc8f9Fd8411107716EcDf5E230c0a28a0C",
    "encryptedWallet": "[{\"version\":3,\"id\":\"b44ebb8b-77b5-4db9-8be9-0bc42f59370f\",\"address\":\"a31184fc8f9fd8411107716ecdf5e230c0a28a0c\",\"crypto\":{\"ciphertext\":\"49459957241bd47ea13c98a0f54b9c53ec8cb943487bbbde35f21fe52c8ef55b\",\"cipherparams\":{\"iv\":\"f85b3f084813510bdd970bbf114f2553\"},\"cipher\":\"aes-128-ctr\",\"kdf\":\"scrypt\",\"kdfparams\":{\"dklen\":32,\"salt\":\"9bd0b64703d6e7e354d7d16c0dcc12749e445063e5a95607023a1d79f6eb65e7\",\"n\":8192,\"r\":8,\"p\":1},\"mac\":\"c743d7d97643337bece74ce55e28c4beae1c13c9c269fc8931b599bffb9a3f25\"}}]",
    "mnemonics": "novo flecha futuro nuvem perdiz outono ombro retangular elevador vedado berimbau reator",
