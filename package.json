@@ -9,6 +9,7 @@
    },
    "dependencies": {
       "@chainlink/abi": "^0.1.4",
+      "ethereumjs-tx": "^2.1.2",
       "express": "^4.17.3",
       "web3": "^1.7.1"
    },
