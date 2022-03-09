@@ -11,6 +11,7 @@ Bob = anyone owning an Ethereum wallet
 
 # Scripts
 
-index.js = serves the POST "send" endpoint
 vendorLink.js = the script for replenishing Alice's $LINK
 sendLink.js = the script for sending $LINK to Bob
+balances.js = script for checking Alice's and Bob's balances
+pocDef.js = minimum transfer function
