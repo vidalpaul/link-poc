@@ -3,10 +3,11 @@ const TokenABI = require('@chainlink/abi/v0.4/LinkToken.json');
 const Alice = require('./wallets/Alice.json');
 const Bob = require('./wallets/Bob.json');
 const Exchange = require('./wallets/Exchange.json');
+const Tx = require('ethereumjs-tx').Transaction;
 
 const ETH_GAS_PER_TRANSACTION = '21500'; // para podermos enviar Ether para contratos não-maliciosos!
 
-async function buyLink() {
+async function sendLink() {
    const provider = await new Web3.providers.HttpProvider(
       'https://rinkeby.infura.io/v3/43598f8c3fcf439b8afee03a0044ac0e'
    );
@@ -14,9 +15,9 @@ async function buyLink() {
    const web3 = new Web3(provider);
 
    const symbol = 'LINK';
-   const from = Exchange.address;
-   const pk = Exchange.privateKey;
-   const to = Alice.address;
+   const from = Alice.address;
+   const pk = Alice.privateKey;
+   const to = Bob.address;
    const gas = ETH_GAS_PER_TRANSACTION;
    const amount = 1000000;
    const gasPrice = null;
@@ -28,7 +29,7 @@ async function buyLink() {
       contractAddr
    );
 
-   web3.eth.defaultAccount = Exchange.address;
+   web3.eth.defaultAccount = Alice.address;
 
    web3.eth.transactionConfirmationBlocks = 1;
 
@@ -44,10 +45,6 @@ async function buyLink() {
    const functionSig = await tokenContract.methods
       .transfer(to, amount)
       .encodeABI();
-
-   const hash1 = await tokenContract.methods
-      .transfer(to, amount)
-      .send({ from: Exchange.address, gas, gasPrice, value: amount });
 
    console.log(`-> functionSig: ${functionSig}`);
 
@@ -68,7 +65,7 @@ async function buyLink() {
    //       throw e;
    //    });
 
-   let transactionCount = await web3.eth.getTransactionCount(Exchange.address);
+   let transactionCount = await web3.eth.getTransactionCount(Alice.address);
 
    let config = {
       from,
@@ -79,30 +76,33 @@ async function buyLink() {
       nonce: transactionCount,
    };
 
-   console.log(`-> tx: ${JSON.stringify(config, null, 2)}`);
+   let rawTx = {
+      from: Alice.address,
+      nonce: transactionCount,
+      gasPrice: 200000000000,
+      gas: estimatedGas * 2,
+      to: contractAddr,
+      value: '0x0',
+      data: tokenContract.methods.transfer(Bob.address, amount).encodeABI(),
+   };
 
-   const signedTx = await web3.eth.accounts
-      .signTransaction(config, pk)
-      .catch(async (e) => {
-         const atLeast = e.message.split('least ')[1];
-         config.gas = atLeast;
+   let tx = new Tx(rawTx, { chain: 'rinkeby' });
 
-         console.log(`-> Gas too low. Adjusting to ${atLeast}`);
+   tx.sign(Buffer.from(pk, 'hex'));
 
-         return await web3.eth.accounts
-            .signTransaction(config, pk)
-            .catch((e) => {
-               throw e;
-            });
-      });
+   let serializedTx = tx.serialize();
 
-   const hash = await web3.eth
-      .sendSignedTransaction(signedTx.rawTransaction)
-      .on('receipt', console.log);
+   console.log(
+      `Attempting to send signed tx:  ${serializedTx.toString('hex')}`
+   );
+   let receipt = await web3.eth.sendSignedTransaction(
+      '0x' + serializedTx.toString('hex')
+   );
+   console.log(`Receipt info:  ${JSON.stringify(receipt, null, '\t')}`);
 
-   console.log(`[token] tx sent: ${hash}`);
-
-   return hash;
+   // The balance may not be updated yet, but let's check
+   balance = await tokenContract.methods.balanceOf(Alice.address).call();
+   console.log(`Balance after send: ${balance}`);
 }
 
-buyLink();
+sendLink();

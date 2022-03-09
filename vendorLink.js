@@ -7,7 +7,7 @@ const Tx = require('ethereumjs-tx').Transaction;
 
 const ETH_GAS_PER_TRANSACTION = '21500'; // para podermos enviar Ether para contratos não-maliciosos!
 
-async function buyLink() {
+async function vendorLink() {
    const provider = await new Web3.providers.HttpProvider(
       'https://rinkeby.infura.io/v3/43598f8c3fcf439b8afee03a0044ac0e'
    );
@@ -105,4 +105,4 @@ async function buyLink() {
    console.log(`Balance after send: ${balance}`);
 }
 
-buyLink();
+vendorLink();
